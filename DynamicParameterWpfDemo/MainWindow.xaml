@@ -1,0 +1,66 @@
+<Window x:Class="DynamicParameterWpfDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:DynamicParameterWpfDemo.Models"
+        Title="动态参数 WPF Demo" Height="680" Width="1080"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <HierarchicalDataTemplate DataType="{x:Type models:ParameterNode}" ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Name}" Margin="8,0,8,0" MinWidth="120"/>
+                <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Width="140"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+    </Window.Resources>
+
+    <DockPanel Margin="14">
+        <TextBlock DockPanel.Dock="Top" FontSize="22" FontWeight="Bold" Margin="0,0,0,12"
+                   Text="动态参数 / 设备模板 / 参数处理 / JSON 持久化"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="1.5*"/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="1. 参数列表（树状：文件夹 / 参数）" Grid.Column="0" Margin="0,0,10,0">
+                <DockPanel Margin="8">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="新增文件夹" Click="AddFolder_Click" Margin="0,0,8,0"/>
+                        <Button Content="新增参数" Click="AddParameter_Click" Margin="0,0,8,0"/>
+                        <Button Content="删除选中参数" Click="DeleteSelectedParameters_Click"/>
+                    </StackPanel>
+                    <TreeView x:Name="ParameterTree" ItemsSource="{Binding Parameters}"/>
+                </DockPanel>
+            </GroupBox>
+
+            <GroupBox Header="2. 设备模板配置" Grid.Column="1" Margin="0,0,10,0">
+                <DockPanel Margin="8">
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                        <TextBlock Text="模板名称"/>
+                        <TextBox x:Name="TemplateNameBox" Text="高速采集设备模板" Margin="0,4,0,8"/>
+                        <Button Content="用勾选参数保存为模板" Click="SaveTemplate_Click" Margin="0,0,0,6"/>
+                        <Button Content="加载模板到参数树" Click="LoadTemplateToTree_Click" Margin="0,0,0,6"/>
+                        <Button Content="删除模板" Click="DeleteTemplate_Click"/>
+                    </StackPanel>
+                    <ListBox x:Name="TemplateList" ItemsSource="{Binding Templates}" DisplayMemberPath="Name"/>
+                </DockPanel>
+            </GroupBox>
+
+            <GroupBox Header="3. 执行模板参数" Grid.Column="2">
+                <DockPanel Margin="8">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="执行选中模板" Click="RunTemplate_Click" Margin="0,0,8,0"/>
+                        <Button Content="保存全部数据" Click="SaveAll_Click"/>
+                    </StackPanel>
+                    <TextBox x:Name="LogBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                             IsReadOnly="True" FontFamily="Consolas"/>
+                </DockPanel>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
+</Window>
