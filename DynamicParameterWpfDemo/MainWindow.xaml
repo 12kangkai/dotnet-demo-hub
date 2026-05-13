@@ -9,7 +9,9 @@
             <StackPanel Orientation="Horizontal" Margin="2">
                 <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding Name}" Margin="8,0,8,0" MinWidth="120"/>
+                <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Margin="8,0,8,0" 
+                         MinWidth="120"/>
                 <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Width="140"/>
             </StackPanel>

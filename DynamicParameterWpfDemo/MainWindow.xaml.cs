@@ -26,7 +26,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void AddFolder_Click(object sender, RoutedEventArgs e)
     {
-        Parameters.Add(new ParameterNode { Name = "新文件夹", IsFolder = true });
+        Parameters.Add(new ParameterNode { Name = "新参数节点", IsFolder = true });
     }
 
     private void AddParameter_Click(object sender, RoutedEventArgs e)
