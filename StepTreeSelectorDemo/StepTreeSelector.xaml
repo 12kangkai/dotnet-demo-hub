@@ -1,0 +1,90 @@
+<UserControl x:Class="StepTreeSelectorDemo.StepTreeSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:StepTreeSelectorDemo">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+        <Style x:Key="StepButtonStyle" TargetType="Button">
+            <Setter Property="MinWidth" Value="96" />
+            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="Opacity" Value="0.7" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="FontWeight" Value="SemiBold" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Border
+        Padding="{Binding Padding, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+        BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+        BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+        CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}">
+
+        <DockPanel LastChildFill="False">
+
+            <Button
+                DockPanel.Dock="Top"
+                Content="{Binding EmptyButtonText, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+                Command="{Binding MaintainCommand, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+                Visibility="{Binding IsEmpty, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+            <ItemsControl
+                DockPanel.Dock="Top"
+                ItemsSource="{Binding VisibleLevels, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}">
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <DockPanel LastChildFill="False" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="DockPanel.Dock" Value="Top" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:StepTreeLevel}">
+                        <DockPanel Margin="0,6" LastChildFill="True">
+
+                            <TextBlock
+                                DockPanel.Dock="Left"
+                                Width="{Binding LevelHeaderWidth, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+                                Margin="0,12,8,0"
+                                VerticalAlignment="Top"
+                                Text="{Binding Title}" />
+
+                            <ItemsControl ItemsSource="{Binding Items}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type local:StepTreeItem}">
+                                        <Button
+                                            Style="{StaticResource StepButtonStyle}"
+                                            Content="{Binding DisplayName}"
+                                            Command="{Binding SelectCommand, RelativeSource={RelativeSource AncestorType=local:StepTreeSelector}}"
+                                            CommandParameter="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </DockPanel>
+    </Border>
+</UserControl>
