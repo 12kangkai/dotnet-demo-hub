@@ -5,8 +5,9 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace StepTreeSelectorDemo;
 
@@ -86,6 +87,7 @@ public partial class StepTreeSelector : UserControl
     private readonly ObservableCollection<object> _selectedPath = new();
     private INotifyCollectionChanged? _observedItemsSource;
     private bool _isUpdatingSelectedItem;
+    private bool _scrollToLatestLevelAfterRebuild;
 
     public StepTreeSelector()
     {
@@ -214,10 +216,13 @@ public partial class StepTreeSelector : UserControl
             _selectedPath[stepItem.LevelIndex] = stepItem.Value;
         }
 
+        var hasChildren = HasChildren(stepItem.Value);
+        _scrollToLatestLevelAfterRebuild = hasChildren;
+
         _isUpdatingSelectedItem = true;
         try
         {
-            SelectedItem = HasChildren(stepItem.Value) ? null : stepItem.Value;
+            SelectedItem = hasChildren ? null : stepItem.Value;
         }
         finally
         {
@@ -273,6 +278,35 @@ public partial class StepTreeSelector : UserControl
         }
 
         NotifyIsEmptyChanged();
+
+        if (_scrollToLatestLevelAfterRebuild)
+        {
+            _scrollToLatestLevelAfterRebuild = false;
+            ScrollToLatestLevel();
+        }
+    }
+
+    private void ScrollToLatestLevel()
+    {
+        Dispatcher.BeginInvoke(
+            new Action(() =>
+            {
+                if (VisibleLevels.Count == 0)
+                    return;
+
+                PART_LevelsItemsControl.UpdateLayout();
+
+                var targetContainer = PART_LevelsItemsControl.ItemContainerGenerator.ContainerFromIndex(VisibleLevels.Count - 1) as FrameworkElement;
+                if (targetContainer == null)
+                {
+                    PART_ScrollViewer.ScrollToEnd();
+                    return;
+                }
+
+                var relativePoint = targetContainer.TransformToAncestor(PART_ScrollViewer).Transform(new Point(0, 0));
+                PART_ScrollViewer.ScrollToVerticalOffset(PART_ScrollViewer.VerticalOffset + relativePoint.Y);
+            }),
+            DispatcherPriority.ContextIdle);
     }
 
     private StepTreeLevel CreateLevel(int levelIndex, IReadOnlyList<object> items)
@@ -283,6 +317,7 @@ public partial class StepTreeSelector : UserControl
                 item,
                 GetDisplayName(item),
                 levelIndex,
+                HasChildren(item),
                 ReferenceEquals(item, selectedValue) || Equals(item, selectedValue)));
 
         return new StepTreeLevel(levelIndex + 1, GetLevelTitle(levelIndex + 1), stepItems);
@@ -435,11 +470,12 @@ public class StepTreeLevel : INotifyPropertyChanged
 
 public sealed class StepTreeItem
 {
-    public StepTreeItem(object value, string displayName, int levelIndex, bool isSelected)
+    public StepTreeItem(object value, string displayName, int levelIndex, bool hasChildren, bool isSelected)
     {
         Value = value;
         DisplayName = displayName;
         LevelIndex = levelIndex;
+        HasChildren = hasChildren;
         IsSelected = isSelected;
     }
 
@@ -448,6 +484,8 @@ public sealed class StepTreeItem
     public string DisplayName { get; }
 
     public int LevelIndex { get; }
+
+    public bool HasChildren { get; }
 
     public bool IsSelected { get; }
 }
