@@ -35,6 +35,7 @@ namespace StepTreeSelectorDemo
         [ObservableProperty]
         private TreeModel? _maintainParent;
 
+        [NotifyCanExecuteChangedFor(nameof(SaveMaintainNodeCommand))]
         [ObservableProperty]
         private string _maintainNodeName = string.Empty;
 
@@ -50,14 +51,14 @@ namespace StepTreeSelectorDemo
         private void CloseMaintainEditor()
         {
             IsMaintainEditorOpen = false;
+            MaintainParent = null;
+            MaintainNodeName = string.Empty;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanSaveMaintainNode))]
         private void SaveMaintainNode()
         {
             var nodeName = MaintainNodeName.Trim();
-            if (string.IsNullOrWhiteSpace(nodeName))
-                return;
 
             var newNode = new TreeModel
             {
@@ -76,6 +77,13 @@ namespace StepTreeSelectorDemo
 
             SelectedReason = newNode;
             IsMaintainEditorOpen = false;
+            MaintainParent = null;
+            MaintainNodeName = string.Empty;
+        }
+
+        private bool CanSaveMaintainNode()
+        {
+            return !string.IsNullOrWhiteSpace(MaintainNodeName);
         }
 
         private long GetNextId()
