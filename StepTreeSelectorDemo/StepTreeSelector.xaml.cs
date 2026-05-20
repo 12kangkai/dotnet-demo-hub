@@ -53,7 +53,7 @@ public partial class StepTreeSelector : UserControl
             nameof(EmptyButtonText),
             typeof(string),
             typeof(StepTreeSelector),
-            new PropertyMetadata("+ 未维护，点击维护"));
+            new PropertyMetadata("点击维护"));
 
     public static readonly DependencyProperty MaintainCommandProperty =
         DependencyProperty.Register(
@@ -61,6 +61,16 @@ public partial class StepTreeSelector : UserControl
             typeof(ICommand),
             typeof(StepTreeSelector),
             new PropertyMetadata(null));
+
+    private static readonly DependencyPropertyKey MaintainCommandParameterPropertyKey =
+        DependencyProperty.RegisterReadOnly(
+            nameof(MaintainCommandParameter),
+            typeof(object),
+            typeof(StepTreeSelector),
+            new PropertyMetadata(null));
+
+    public static readonly DependencyProperty MaintainCommandParameterProperty =
+        MaintainCommandParameterPropertyKey.DependencyProperty;
 
     public static readonly DependencyProperty IsEmptyProperty =
         DependencyProperty.Register(
@@ -141,6 +151,12 @@ public partial class StepTreeSelector : UserControl
     {
         get => (ICommand?)GetValue(MaintainCommandProperty);
         set => SetValue(MaintainCommandProperty, value);
+    }
+
+    public object? MaintainCommandParameter
+    {
+        get => GetValue(MaintainCommandParameterProperty);
+        private set => SetValue(MaintainCommandParameterPropertyKey, value);
     }
 
     public CornerRadius CornerRadius
@@ -255,6 +271,8 @@ public partial class StepTreeSelector : UserControl
 
     private void RebuildLevels()
     {
+        UpdateMaintainCommandParameter();
+
         VisibleLevels.Clear();
 
         var rootItems = GetRootItems();
@@ -328,7 +346,10 @@ public partial class StepTreeSelector : UserControl
         _selectedPath.Clear();
 
         if (SelectedItem == null)
+        {
+            UpdateMaintainCommandParameter();
             return;
+        }
 
         if (TryBuildPath(GetRootItems(), SelectedItem, out var path))
         {
@@ -337,6 +358,13 @@ public partial class StepTreeSelector : UserControl
                 _selectedPath.Add(item);
             }
         }
+
+        UpdateMaintainCommandParameter();
+    }
+
+    private void UpdateMaintainCommandParameter()
+    {
+        MaintainCommandParameter = _selectedPath.LastOrDefault();
     }
 
     private bool TryBuildPath(IEnumerable<object> nodes, object target, out List<object> path)
