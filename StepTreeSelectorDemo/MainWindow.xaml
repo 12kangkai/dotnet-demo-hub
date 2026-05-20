@@ -15,6 +15,8 @@
                  WindowBackdropType="Mica">
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
         <Style x:Key="SectionLabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -184,6 +186,71 @@
                             Text="选择中间节点只会展开下一层，不会提交为最终原因。" />
                     </Border>
                 </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid
+            Grid.RowSpan="2"
+            Background="#99000000"
+            Visibility="{Binding IsMaintainEditorOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border
+                Width="420"
+                Padding="24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                BorderBrush="#E4E7EC"
+                BorderThickness="1"
+                CornerRadius="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="#111827"
+                        Text="维护子节点" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="0,8,0,0"
+                        FontSize="13"
+                        Foreground="#667085"
+                        Text="{Binding MaintainParent.DisplayName, StringFormat=当前节点：{0}, TargetNullValue=当前节点：根节点}" />
+
+                    <StackPanel Grid.Row="2" Margin="0,22,0,0">
+                        <TextBlock
+                            Style="{StaticResource SectionLabelStyle}"
+                            Text="节点名称" />
+                        <TextBox
+                            Margin="0,8,0,0"
+                            MinHeight="38"
+                            Padding="10,7"
+                            Text="{Binding MaintainNodeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Row="3"
+                        Margin="0,24,0,0"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <ui:Button
+                            Margin="0,0,10,0"
+                            Appearance="Secondary"
+                            Command="{Binding CloseMaintainEditorCommand}"
+                            Content="取消" />
+                        <ui:Button
+                            Appearance="Primary"
+                            Command="{Binding SaveMaintainNodeCommand}"
+                            Content="保存" />
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
     </Grid>

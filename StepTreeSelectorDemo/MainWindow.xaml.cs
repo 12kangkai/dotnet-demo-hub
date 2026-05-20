@@ -29,10 +29,74 @@ namespace StepTreeSelectorDemo
         [ObservableProperty]
         private TreeModel? _selectedReason;
 
+        [ObservableProperty]
+        private bool _isMaintainEditorOpen;
+
+        [ObservableProperty]
+        private TreeModel? _maintainParent;
+
+        [ObservableProperty]
+        private string _maintainNodeName = string.Empty;
+
         [RelayCommand]
-        private void Maintain()
+        private void Maintain(TreeModel? currentNode)
         {
-            // 暂不实现
+            MaintainParent = currentNode;
+            MaintainNodeName = string.Empty;
+            IsMaintainEditorOpen = true;
+        }
+
+        [RelayCommand]
+        private void CloseMaintainEditor()
+        {
+            IsMaintainEditorOpen = false;
+        }
+
+        [RelayCommand]
+        private void SaveMaintainNode()
+        {
+            var nodeName = MaintainNodeName.Trim();
+            if (string.IsNullOrWhiteSpace(nodeName))
+                return;
+
+            var newNode = new TreeModel
+            {
+                Id = GetNextId(),
+                DisplayName = nodeName
+            };
+
+            if (MaintainParent == null)
+            {
+                ReasonModels.Add(newNode);
+            }
+            else
+            {
+                MaintainParent.Children.Add(newNode);
+            }
+
+            SelectedReason = newNode;
+            IsMaintainEditorOpen = false;
+        }
+
+        private long GetNextId()
+        {
+            return EnumerateTree(ReasonModels)
+                .Select(node => node.Id)
+                .DefaultIfEmpty(0)
+                .Max() + 1;
+        }
+
+        private static IEnumerable<TreeModel> EnumerateTree(IEnumerable<TreeModel> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                yield return node;
+
+                foreach (var child in EnumerateTree(node.Children))
+                {
+                    yield return child;
+                }
+            }
         }
 
         private static List<TreeModel> CreateDemoTree()
@@ -99,7 +163,7 @@ namespace StepTreeSelectorDemo
         [ObservableProperty]
         private string _displayName = "None";
 
-        public List<TreeModel> Children { get; } = new();
+        public ObservableCollection<TreeModel> Children { get; } = new();
 
         public override string ToString()
         {
