@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicParameterWpfDemo", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StepTreeSelectorDemo", "StepTreeSelectorDemo\StepTreeSelectorDemo.csproj", "{BE99F14C-64D5-4A30-A09B-12B04A97189B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Wpf.Controls", "shared\Demo.Wpf.Controls\Demo.Wpf.Controls.csproj", "{FC2E15FE-E6C2-4919-B3EA-6FD5DBD92B6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{BE99F14C-64D5-4A30-A09B-12B04A97189B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE99F14C-64D5-4A30-A09B-12B04A97189B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE99F14C-64D5-4A30-A09B-12B04A97189B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC2E15FE-E6C2-4919-B3EA-6FD5DBD92B6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC2E15FE-E6C2-4919-B3EA-6FD5DBD92B6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC2E15FE-E6C2-4919-B3EA-6FD5DBD92B6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC2E15FE-E6C2-4919-B3EA-6FD5DBD92B6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{E0EA5903-5555-4CA9-9BF9-8149361568AA} = {1E8900E8-238D-4046-ABBA-046597A9FA20}
 		{699E9796-6E84-49CD-B9EF-AF92D37E3454} = {EB324F62-FD00-4B47-9EA7-BF46D30A2C39}
 		{BE99F14C-64D5-4A30-A09B-12B04A97189B} = {EB324F62-FD00-4B47-9EA7-BF46D30A2C39}
+		{FC2E15FE-E6C2-4919-B3EA-6FD5DBD92B6D} = {1E8900E8-238D-4046-ABBA-046597A9FA20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57F5C68E-4199-4139-8FA8-0CE1EC14A830}

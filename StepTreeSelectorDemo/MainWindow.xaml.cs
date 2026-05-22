@@ -33,6 +33,9 @@ namespace StepTreeSelectorDemo
         private bool _isMaintainEditorOpen;
 
         [ObservableProperty]
+        private bool _isMaintainPreviewOpen;
+
+        [ObservableProperty]
         private TreeModel? _maintainParent;
 
         [NotifyCanExecuteChangedFor(nameof(SaveMaintainNodeCommand))]
@@ -44,15 +47,29 @@ namespace StepTreeSelectorDemo
         {
             MaintainParent = currentNode;
             MaintainNodeName = string.Empty;
+            IsMaintainPreviewOpen = false;
             IsMaintainEditorOpen = true;
         }
 
         [RelayCommand]
         private void CloseMaintainEditor()
         {
+            IsMaintainPreviewOpen = false;
             IsMaintainEditorOpen = false;
             MaintainParent = null;
             MaintainNodeName = string.Empty;
+        }
+
+        [RelayCommand]
+        private void OpenMaintainPreview()
+        {
+            IsMaintainPreviewOpen = true;
+        }
+
+        [RelayCommand]
+        private void CloseMaintainPreview()
+        {
+            IsMaintainPreviewOpen = false;
         }
 
         [RelayCommand(CanExecute = nameof(CanSaveMaintainNode))]
@@ -76,6 +93,7 @@ namespace StepTreeSelectorDemo
             }
 
             SelectedReason = newNode;
+            IsMaintainPreviewOpen = false;
             IsMaintainEditorOpen = false;
             MaintainParent = null;
             MaintainNodeName = string.Empty;

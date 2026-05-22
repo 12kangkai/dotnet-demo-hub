@@ -4,6 +4,7 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:local="clr-namespace:StepTreeSelectorDemo"
+                 xmlns:controls="clr-namespace:Demo.Wpf.Controls.Controls;assembly=Demo.Wpf.Controls"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  mc:Ignorable="d"
                  Title="Step Tree Selector"
@@ -24,7 +25,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid Background="#F7F8FA">
+    <Grid x:Name="WindowRoot" Background="#F7F8FA">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -189,12 +190,13 @@
             </Border>
         </Grid>
 
-        <Grid
+        <controls:OverlayHost
             Grid.RowSpan="2"
-            Background="#99000000"
-            Visibility="{Binding IsMaintainEditorOpen, Converter={StaticResource BoolToVisibilityConverter}}">
+            Anchor="{Binding ElementName=WindowRoot}"
+            IsOpen="{Binding IsMaintainEditorOpen}"
+            OverlayBackground="#99000000">
             <Border
-                Width="420"
+                Width="460"
                 Padding="24"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -202,8 +204,9 @@
                 BorderBrush="#E4E7EC"
                 BorderThickness="1"
                 CornerRadius="10">
-                <Grid>
+                <Grid x:Name="MaintainEditorRoot">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -243,6 +246,11 @@
                         <ui:Button
                             Margin="0,0,10,0"
                             Appearance="Secondary"
+                            Command="{Binding OpenMaintainPreviewCommand}"
+                            Content="局部预览" />
+                        <ui:Button
+                            Margin="0,0,10,0"
+                            Appearance="Secondary"
                             Command="{Binding CloseMaintainEditorCommand}"
                             Content="取消" />
                         <ui:Button
@@ -250,8 +258,55 @@
                             Command="{Binding SaveMaintainNodeCommand}"
                             Content="保存" />
                     </StackPanel>
+
+                    <controls:OverlayHost
+                        Grid.RowSpan="5"
+                        Anchor="{Binding ElementName=MaintainEditorRoot}"
+                        IsOpen="{Binding IsMaintainPreviewOpen}"
+                        OverlayBackground="#88FFFFFF">
+                        <Border
+                            Width="320"
+                            Padding="20"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="White"
+                            BorderBrush="#D0D5DD"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="#111827"
+                                    Text="局部 Overlay" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,10,0,0"
+                                    FontSize="13"
+                                    Foreground="#475467"
+                                    TextWrapping="Wrap"
+                                    Text="{Binding MaintainNodeName, StringFormat=当前输入：{0}, TargetNullValue=当前输入：}" />
+
+                                <ui:Button
+                                    Grid.Row="2"
+                                    Margin="0,18,0,0"
+                                    HorizontalAlignment="Right"
+                                    Appearance="Primary"
+                                    Command="{Binding CloseMaintainPreviewCommand}"
+                                    Content="关闭预览" />
+                            </Grid>
+                        </Border>
+                    </controls:OverlayHost>
                 </Grid>
             </Border>
-        </Grid>
+        </controls:OverlayHost>
     </Grid>
 </ui:FluentWindow>
