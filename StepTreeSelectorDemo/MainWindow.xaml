@@ -49,11 +49,23 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,22">
-                <TextBlock
-                    FontSize="28"
-                    FontWeight="SemiBold"
-                    Foreground="#111827"
-                    Text="报警原因逐级选择" />
+                <DockPanel LastChildFill="True">
+                    <ui:Button
+                        DockPanel.Dock="Right"
+                        Margin="16,2,0,0"
+                        HorizontalAlignment="Right"
+                        Appearance="Secondary"
+                        Command="{Binding OpenGuideCommand}"
+                        Content="新手引导"
+                        Icon="{ui:SymbolIcon Lightbulb24}" />
+
+                    <TextBlock
+                        FontSize="28"
+                        FontWeight="SemiBold"
+                        Foreground="#111827"
+                        Text="报警原因逐级选择" />
+                </DockPanel>
+
                 <TextBlock
                     Margin="0,8,0,0"
                     FontSize="14"
@@ -62,6 +74,7 @@
             </StackPanel>
 
             <Border
+                x:Name="ReasonTreePanel"
                 Grid.Row="1"
                 Grid.Column="0"
                 Padding="22"
@@ -103,6 +116,7 @@
                     </DockPanel>
 
                     <local:StepTreeSelector
+                        x:Name="StepTreeControl"
                         Grid.Row="1"
                         ItemsSource="{Binding ReasonModels}"
                         SelectedItem="{Binding SelectedReason, Mode=TwoWay}"
@@ -116,6 +130,7 @@
             </Border>
 
             <Border
+                x:Name="SelectedResultPanel"
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="18,0,0,0"
@@ -308,5 +323,12 @@
                 </Grid>
             </Border>
         </controls:OverlayHost>
+
+        <controls:BeginnerGuideHost
+            Grid.RowSpan="2"
+            Anchor="{Binding ElementName=WindowRoot}"
+            CurrentIndex="{Binding GuideCurrentIndex, Mode=TwoWay}"
+            IsOpen="{Binding IsGuideOpen, Mode=TwoWay}"
+            Steps="{Binding GuideSteps}" />
     </Grid>
 </ui:FluentWindow>

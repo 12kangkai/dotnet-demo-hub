@@ -1,0 +1,185 @@
+<UserControl x:Class="Demo.Wpf.Controls.Controls.BeginnerGuideHost"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Demo.Wpf.Controls.Controls"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <controls:OverlayHost
+        Anchor="{Binding Anchor, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+        IsOpen="{Binding IsOpen, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}, Mode=TwoWay}"
+        OverlayBackground="Transparent">
+        <Canvas
+            x:Name="PART_OverlayCanvas"
+            Background="Transparent"
+            Focusable="True"
+            SizeChanged="OnOverlayCanvasSizeChanged">
+            <Rectangle
+                Canvas.Left="0"
+                Canvas.Top="0"
+                Width="{Binding ActualWidth, ElementName=PART_OverlayCanvas}"
+                Height="{Binding ActualHeight, ElementName=PART_OverlayCanvas}"
+                Fill="#A6000000" />
+
+            <Border
+                x:Name="PART_HighlightBorder"
+                Width="{Binding HighlightWidth, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                Height="{Binding HighlightHeight, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                Canvas.Left="{Binding HighlightLeft, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                Canvas.Top="{Binding HighlightTop, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                BorderBrush="#84CAFF"
+                BorderThickness="2"
+                CornerRadius="12"
+                RenderTransformOrigin="0.5,0.5"
+                Visibility="{Binding HasTarget, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="22"
+                        Direction="0"
+                        Opacity="0.72"
+                        ShadowDepth="0"
+                        Color="#2E90FA" />
+                </Border.Effect>
+                <Border.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                </Border.RenderTransform>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.72" To="1" Duration="0:0:0.72" />
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX" From="1" To="1.025" Duration="0:0:0.72" />
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY" From="1" To="1.025" Duration="0:0:0.72" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+            </Border>
+
+            <Border
+                x:Name="PART_GuideCard"
+                Width="420"
+                MaxWidth="420"
+                Canvas.Left="{Binding CardLeft, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                Canvas.Top="{Binding CardTop, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                Padding="24"
+                Background="White"
+                BorderBrush="#E4E7EC"
+                BorderThickness="1"
+                CornerRadius="10"
+                SizeChanged="OnGuideCardSizeChanged">
+                <Border.Effect>
+                    <DropShadowEffect
+                        BlurRadius="28"
+                        Direction="270"
+                        Opacity="0.22"
+                        ShadowDepth="10"
+                        Color="#101828" />
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Grid.Row="0" LastChildFill="True">
+                        <Border
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,14,0"
+                            Background="#EEF4FF"
+                            CornerRadius="20">
+                            <ui:SymbolIcon
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Filled="True"
+                                Foreground="#175CD3"
+                                Symbol="Lightbulb24" />
+                        </Border>
+
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="#667085"
+                                Text="{Binding ProgressText, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Foreground="#111827"
+                                Text="{Binding CurrentStep.Title, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="0,18,0,0"
+                        FontSize="14"
+                        Foreground="#475467"
+                        LineHeight="22"
+                        Text="{Binding CurrentStep.Description, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                        TextWrapping="Wrap" />
+
+                    <Border
+                        Grid.Row="2"
+                        Margin="0,18,0,0"
+                        Padding="12"
+                        Background="#F9FAFB"
+                        BorderBrush="#EAECF0"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Visibility="{Binding HasAccentText, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <DockPanel LastChildFill="True">
+                            <ui:SymbolIcon
+                                Width="16"
+                                Height="16"
+                                Margin="0,1,8,0"
+                                VerticalAlignment="Top"
+                                Foreground="#667085"
+                                Symbol="Info16" />
+                            <TextBlock
+                                FontSize="13"
+                                Foreground="#344054"
+                                Text="{Binding CurrentStep.AccentText, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                                TextWrapping="Wrap" />
+                        </DockPanel>
+                    </Border>
+
+                    <DockPanel Grid.Row="3" Margin="0,24,0,0" LastChildFill="False">
+                        <ui:Button
+                            DockPanel.Dock="Left"
+                            Appearance="Transparent"
+                            Command="{Binding SkipCommand, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                            Content="跳过" />
+
+                        <StackPanel
+                            DockPanel.Dock="Right"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,0,10,0"
+                                Appearance="Secondary"
+                                Command="{Binding PreviousCommand, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                                Content="上一步"
+                                Icon="{ui:SymbolIcon ArrowLeft16}"
+                                IsEnabled="{Binding CanGoPrevious, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}" />
+                            <ui:Button
+                                Appearance="Primary"
+                                Command="{Binding NextCommand, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                                Content="{Binding PrimaryButtonText, RelativeSource={RelativeSource AncestorType=controls:BeginnerGuideHost}}"
+                                Icon="{ui:SymbolIcon ArrowRight16}" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </Border>
+        </Canvas>
+    </controls:OverlayHost>
+</UserControl>

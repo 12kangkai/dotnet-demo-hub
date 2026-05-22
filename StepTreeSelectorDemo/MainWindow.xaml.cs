@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Demo.Wpf.Controls.Controls;
 using Wpf.Ui.Controls;
 
 namespace StepTreeSelectorDemo
@@ -22,12 +23,21 @@ namespace StepTreeSelectorDemo
         public MainViewModel()
         {
             ReasonModels = new ObservableCollection<TreeModel>(CreateDemoTree());
+            GuideSteps = new ObservableCollection<BeginnerGuideStep>(CreateGuideSteps());
         }
 
         public ObservableCollection<TreeModel> ReasonModels { get; }
 
+        public ObservableCollection<BeginnerGuideStep> GuideSteps { get; }
+
         [ObservableProperty]
         private TreeModel? _selectedReason;
+
+        [ObservableProperty]
+        private bool _isGuideOpen;
+
+        [ObservableProperty]
+        private int _guideCurrentIndex;
 
         [ObservableProperty]
         private bool _isMaintainEditorOpen;
@@ -41,6 +51,13 @@ namespace StepTreeSelectorDemo
         [NotifyCanExecuteChangedFor(nameof(SaveMaintainNodeCommand))]
         [ObservableProperty]
         private string _maintainNodeName = string.Empty;
+
+        [RelayCommand]
+        private void OpenGuide()
+        {
+            GuideCurrentIndex = 0;
+            IsGuideOpen = true;
+        }
 
         [RelayCommand]
         private void Maintain(TreeModel? currentNode)
@@ -175,6 +192,33 @@ namespace StepTreeSelectorDemo
                 electric,
                 mechanical,
                 software
+            };
+        }
+
+        private static List<BeginnerGuideStep> CreateGuideSteps()
+        {
+            return new List<BeginnerGuideStep>
+            {
+                new()
+                {
+                    TargetName = "StepTreeControl",
+                    Title = "按层级定位原因",
+                    Description = "左侧原因树会按当前选择展开下一层。选择中间节点只负责继续展开，选择叶子节点才会写入最终结果。",
+                    AccentText = "适合层级较深、但每次只希望用户看到当前分支的配置场景。"
+                },
+                new()
+                {
+                    TargetName = "SelectedResultPanel",
+                    Title = "查看最终选择",
+                    Description = "右侧结果区会实时显示当前已选中的最终叶子节点。"
+                },
+                new()
+                {
+                    TargetName = "ReasonTreePanel",
+                    Title = "维护子节点",
+                    Description = "树控件底部的维护按钮会打开局部 Overlay 编辑器，可以给当前节点继续添加原因项。",
+                    AccentText = "这个引导控件来自共享控件库，其他 demo 只需要传入步骤集合和打开状态即可复用。"
+                }
             };
         }
     }
